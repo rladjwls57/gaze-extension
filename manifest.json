@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "DOM Extractor",
+    "version": "1.0",
+    "description": "현재 웹페이지의 DOM 구조를 추출합니다.",
+"content_security_policy": {
+  "extension_pages": "default-src 'self'; connect-src 'self' https://console.seeso.io https://www.google.com http://localhost:5001 http://127.0.0.1:5001; script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; style-src 'self' 'unsafe-inline'; script-src-elem 'self' 'wasm-unsafe-eval' 'unsafe-inline' 'inline-speculation-rules' blob:;"
+},
+"cross_origin_embedder_policy": {
+    "value": "require-corp"
+  },
+  "cross_origin_opener_policy": {
+    "value": "same-origin"
+  },
+
+    "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "storage",
+    "alarms",
+    "declarativeNetRequest"
+  ],
+    "host_permissions": ["<all_urls>", "https://console.seeso.io/*"],
+    
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "all_frames": true
+      }
+    ],
+
+    "web_accessible_resources": [
+    {
+      "resources": [
+        "getDom.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+  }
+  
