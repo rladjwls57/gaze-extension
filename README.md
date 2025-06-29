@@ -43,35 +43,22 @@ EyeMatch는 사용자의 웹페이지 시선 데이터를 기반으로, 시선�
 ---
 
 ## 프로젝트 구조
-
+```
 EyeMatch/
-
 ├── extension/             # 크롬 확장 프로그램
-
 │   ├── background.js      # 백그라운드 서비스 워커
-
 │   ├── content.js         # 콘텐츠 스크립트 (시선 데이터 수집 및 전송)
-
 │   ├── getDOM.js          # DOM 구조 추출 스크립트
-
 │   ├── icon.png           # 확장 프로그램 아이콘
-
 │   ├── manifest.json      # 확장 프로그램 설정 파일 (Manifest V3)
-
 │   ├── popup.html         # 확장 프로그램 팝업 UI
-
 │   └── popup.js           # 팝업 UI 로직
-
 │
-
 ├── server/                # 서버 측 캡셔닝 및 요약 기능
-
 │   ├── server.py          # Flask 기반 서버 엔트리 포인트
-
 │   ├── test.py            # 테스트 스크립트 또는 예제 요청 코드
-
 │   └── image.jpg          # 예제 이미지 (캡셔닝 테스트용)
-
+```
 ## 설치 및 실행 방법
 
 ### 1. 크롬 확장 프로그램 설치
