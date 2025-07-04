@@ -1,10 +1,24 @@
+console.log("✅ getDOM.js 로드됨");
+
+    // tagName: target.tagName,
+    // id: target.id,
+    // className: target.className,
+    // innerText: target.innerText,
+    // outerHTML: target.outerHTML,
+    // dataset: { ...target.dataset },
+    // timestamp: Date.now()
+
+
+    //어떤 요소를 추가해야할지 고민해야할 듯
 function getDOMTree(element) {
+    let rect = element.getBoundingClientRect();
     let obj = {
         tag: element.tagName,
-        x: element.getBoundingClientRect().x,
-        y: element.getBoundingClientRect().y,
-        width: element.getBoundingClientRect().width,
-        height: element.getBoundingClientRect().height,
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        text: element.innerText || "",  // 추가!
         children: []
     };
 
@@ -15,12 +29,26 @@ function getDOMTree(element) {
     return obj;
 }
 
-function extractDOM() {
-    let domData = getDOMTree(document.body);
-    domData=filterVisibleElements(domData);
-    console.log("현재 페이지의 DOM 구조:", domData);
-    return domData;
+
+function removeTextDuplicates(domTree, seenTexts = new Set()) {
+    if (!domTree) return null;
+
+    const textKey = domTree.text?.trim();
+    if (textKey && seenTexts.has(textKey)) {
+        return null; // 중복된 텍스트 제거
+    }
+
+    if (textKey) {
+        seenTexts.add(textKey);
+    }
+
+    const filteredChildren = domTree.children
+        .map(child => removeTextDuplicates(child, seenTexts))
+        .filter(child => child !== null);
+
+    return { ...domTree, children: filteredChildren };
 }
+
 
 function filterVisibleElements(domTree) {
     let viewportTop = window.scrollY;
@@ -68,4 +96,31 @@ function filterVisibleElements(domTree) {
 }
 
 
-export {extractDOM}
+function extractDOM() {
+    let domData = getDOMTree(document.body);
+    domData=filterVisibleElements(domData);
+    console.log("현재 페이지의 DOM 구조:", domData);
+    return domData;
+}
+
+function downloadJson(data, filename = "dom.json") {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "extractDom") {
+    const dom = extractDOM(); // ← DOM 분석 함수
+    downloadJson(dom, "dom.json"); // JSON 파일로 다운로드
+    return true;
+  }
+});
+

@@ -1,3 +1,6 @@
+console.log("✅ content.js 로드됨");
+
+
 // === 설정 상수 ===
 const OVERLAY_DURATION = 100; // 0.1초
 const HIGHLIGHT_CLASS = "gaze-highlight-box";
