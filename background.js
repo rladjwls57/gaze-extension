@@ -1,27 +1,28 @@
 console.log("✅ DOM Extractor 백그라운드 실행됨");
 
+// 백그라운드 -> content script 메시지 리스너 설정
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.action) {
+// dom 추출 요청 
     case "extractDom":
-      console.log("📥 DOM 추출 요청 수신 (content script로 전송)");
-
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length === 0) return;
     const tabId = tabs[0].id;
 
-    chrome.tabs.sendMessage(tabId, { action: "extractDom" }, (response) => {
+    chrome.tabs.sendMessage(tabId, { action: "getDomTreeData" }, (response) => {
       if (chrome.runtime.lastError) {
         console.error("❌ 메시지 전송 실패:", chrome.runtime.lastError.message);
         sendResponse({ status: "error", error: chrome.runtime.lastError.message });
       } else {
-        console.log("✅ 받은 DOM:", response.dom);
-        sendResponse({ status: "success", dom: response.dom });
+        sendResponse({ status: "success"});
       }
     });
   });
 
   return true;
 
+
+  // 텍스트 요약 요청
     case "summarizeText":
       console.log("🧠 요약 요청 수신. 텍스트 길이:", message.text.length);
 
