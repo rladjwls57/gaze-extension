@@ -33,7 +33,75 @@ const domExtractOptions = {
   }
 };
 
+function styleToText(style) {
+  if (!style) return "";
 
+  const descriptions = [];
+
+  if (style.color) {
+    descriptions.push(`글자색은 ${style.color}입니다.`);
+  }
+
+  if (style.backgroundColor) {
+    if (style.backgroundColor === "rgba(0, 0, 0, 0)" || style.backgroundColor === "transparent") {
+      descriptions.push("배경은 투명입니다.");
+    } else {
+      descriptions.push(`배경색은 ${style.backgroundColor}입니다.`);
+    }
+  }
+
+  if (style.fontSize) {
+    descriptions.push(`글씨 크기는 ${style.fontSize}입니다.`);
+  }
+
+  if (style.fontWeight) {
+    const fwNum = parseInt(style.fontWeight);
+    if (!isNaN(fwNum) && fwNum >= 700) {
+      descriptions.push("글씨는 굵게 표시됩니다.");
+    } else if (style.fontWeight === "bold") {
+      descriptions.push("글씨는 굵게 표시됩니다.");
+    } else {
+      descriptions.push(`글씨 두께는 ${style.fontWeight}입니다.`);
+    }
+  }
+
+  if (style.display) {
+    descriptions.push(`표시 형식은 '${style.display}'입니다.`);
+  }
+
+  if (style.visibility) {
+    if (style.visibility === "visible") {
+      descriptions.push("요소는 보입니다.");
+    } else {
+      descriptions.push("요소는 숨겨져 있습니다.");
+    }
+  }
+
+  if (style.opacity) {
+    const op = parseFloat(style.opacity);
+    if (!isNaN(op) && op < 1) {
+      descriptions.push(`투명도는 ${style.opacity}입니다.`);
+    } else {
+      descriptions.push("투명하지 않습니다.");
+    }
+  }
+
+  if (style.margin && style.margin !== "0px") {
+    descriptions.push(`바깥 여백(margin)은 ${style.margin}입니다.`);
+  }
+
+  if (style.padding && style.padding !== "0px") {
+    descriptions.push(`안쪽 여백(padding)은 ${style.padding}입니다.`);
+  }
+
+  if (style.border && !style.border.startsWith("0px")) {
+    descriptions.push(`테두리는 '${style.border}'입니다.`);
+  } else {
+    descriptions.push("테두리는 없습니다.");
+  }
+
+  return descriptions.join(" ");
+}
 
 // --------------------------
 // 1. DOM 트리 생성 함수
@@ -82,6 +150,7 @@ const currentPath = path
       padding: style.padding,
       border: style.border
     };
+    obj.styleText = styleToText(obj.style);
   }
 
   for (let child of element.children) {
