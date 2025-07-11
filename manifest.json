@@ -27,13 +27,14 @@
       "service_worker": "background.js"
     },
     "action": {
-      "default_popup": "popup.html",
-      "default_icon": "icon.png"
+      "default_popup": "popup/popup.html",
+      "default_icon": "icon/icon.png"
     },
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["content.js"],
+        "js": ["content/highLight.js","content/getDOM.js","content/LLM.js"],
+        "run_at": "document_idle",
         "all_frames": true
       }
     ],
@@ -41,7 +42,6 @@
     "web_accessible_resources": [
     {
       "resources": [
-        "getDom.js"
       ],
       "matches": ["<all_urls>"]
     }
